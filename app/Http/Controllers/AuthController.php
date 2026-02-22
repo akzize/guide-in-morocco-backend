@@ -19,7 +19,12 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'user_type' => 'required|in:guide,client',
+            'documents' => 'required_if:user_type,guide|array',
+            'documents.*.type' => 'required_with:documents|in:id_card,passport,certificate,insurance,license',
+            'documents.*.file' => 'required_with:documents|file|mimes:pdf,jpeg,png,jpg|max:5120',
         ]);
+
+        $status = $request->user_type === 'guide' ? 'inactive' : 'active';
 
         $user = User::create([
             'first_name' => $request->first_name,
@@ -27,13 +32,33 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
-            'status' => 'active',
+            'status' => $status,
         ]);
 
         if ($user->user_type === 'guide') {
-            Guide::create(['user_id' => $user->id]);
+            $guide = Guide::create(['user_id' => $user->id]);
+
+            if ($request->has('documents')) {
+                foreach ($request->documents as $doc) {
+                    $path = $doc['file']->store('guide_documents', 'public');
+                    \App\Models\GuideDocument::create([
+                        'guide_id' => $guide->id,
+                        'document_type' => $doc['type'],
+                        'file_url' => '/storage/' . $path,
+                        'file_size' => $doc['file']->getSize(),
+                        'verification_status' => 'pending',
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'user' => $user,
+                'message' => 'Account created successfully. An admin will review your information and get back to you once the account is activated.',
+            ], 201);
+            
         } elseif ($user->user_type === 'client') {
             Client::create(['user_id' => $user->id]);
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\ClientRegistered($user));
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -59,6 +84,14 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+
+        if ($user->status === 'inactive') {
+            Auth::logout();
+            $user->tokens()->delete();
+            return response()->json([
+                'message' => 'Your account is pending admin validation.'
+            ], 403);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
