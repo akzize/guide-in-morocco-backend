@@ -20,7 +20,13 @@ class Guide extends Model
     public function languages()
     {
         return $this->belongsToMany(Language::class, 'guide_languages')
-                    ->withPivot('proficiency_level')->withTimestamps();
+                    ->withPivot(['proficiency_level', 'is_principal'])->withTimestamps();
+    }
+
+    public function cities()
+    {
+        return $this->belongsToMany(City::class, 'guide_cities')
+                    ->withPivot('is_main')->withTimestamps();
     }
 
     public function specialties()
