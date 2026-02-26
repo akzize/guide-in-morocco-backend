@@ -12,7 +12,12 @@ use App\Http\Controllers\LookupController;
 Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
 
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\LanguageController;
+
 // Public Routes
+Route::get('/cities', [CityController::class, 'index']);
+Route::get('/languages', [LanguageController::class, 'index']);
 Route::get('/lookups', [LookupController::class, 'index']);
 Route::get('/tours', [TourController::class, 'index']);
 Route::get('/tours/{tour}', [TourController::class, 'show']);
