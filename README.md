@@ -17,7 +17,9 @@ Base URL: `/api`
 ### Public Routes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET    | `/lookups` | Get application lookup data (cities, languages, etc.) |
+| GET    | `/lookups` | Get application lookup data (general) |
+| GET    | `/cities`  | List all available Moroccan cities |
+| GET    | `/languages` | List all available languages |
 | GET    | `/tours`   | List all available tours |
 | GET    | `/tours/{tour}` | Get details of a specific tour |
 | GET    | `/guides`  | List all guides |
