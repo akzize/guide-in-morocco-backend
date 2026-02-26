@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('guide_documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('guide_id')->constrained('guides')->onDelete('cascade');
-            $table->enum('document_type', ['id_card', 'passport', 'certificate', 'insurance', 'license']);
+            $table->enum('document_type', ['id_card', 'passport', 'certificate', 'insurance', 'license', 'activity_proof']);
             $table->string('file_url');
             $table->integer('file_size')->nullable();
             $table->enum('verification_status', ['pending', 'approved', 'rejected'])->default('pending');
