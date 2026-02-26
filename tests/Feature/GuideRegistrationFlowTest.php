@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Models\Guide;
+use App\Models\City;
+use App\Models\Language;
 use App\Mail\GuideAccountActivated;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
@@ -15,6 +17,14 @@ test('guide registration to activation flow', function () {
     Mail::fake();
 
     $documentFile = UploadedFile::fake()->image('id_card.jpg');
+    $activityImages = [
+        UploadedFile::fake()->image('proof1.jpg')->size(100),
+        UploadedFile::fake()->image('proof2.jpg')->size(100),
+        UploadedFile::fake()->image('proof3.jpg')->size(100),
+    ];
+
+    $city = City::create(['name' => 'Marrakech', 'region' => 'Marrakech-Safi']);
+    $language = Language::create(['name' => 'English', 'code' => 'en']);
 
     // 1. Register Guide
     $response = $this->postJson('/api/register', [
@@ -23,13 +33,26 @@ test('guide registration to activation flow', function () {
         'email' => 'guide@example.com',
         'password' => 'password123',
         'password_confirmation' => 'password123',
+        'phone' => '+212600000000',
+        'whatsapp' => '+212600000000',
+        'agrement_number' => 'AG-12345',
+        'agrement_date' => '2020-01-01',
+        'agrement_authority' => 'Ministry of Tourism',
+        'bio' => 'Experienced guide in Marrakech.',
         'user_type' => 'guide',
+        'cities' => [
+            ['id' => $city->id, 'is_main' => true]
+        ],
+        'languages' => [
+            ['id' => $language->id, 'is_principal' => true, 'proficiency_level' => 'fluent']
+        ],
         'documents' => [
             [
                 'type' => 'id_card',
                 'file' => $documentFile,
             ]
-        ]
+        ],
+        'activity_images' => $activityImages,
     ]);
 
     $response->assertStatus(201)
@@ -38,6 +61,15 @@ test('guide registration to activation flow', function () {
 
     $user = User::where('email', 'guide@example.com')->first();
     expect($user->status)->toBe('inactive');
+    expect($user->phone)->toBe('+212600000000');
+
+    $guide = Guide::where('user_id', $user->id)->first();
+    expect($guide->whatsapp)->toBe('+212600000000');
+    expect($guide->agrement_number)->toBe('AG-12345');
+    
+    expect($guide->cities()->count())->toBe(1);
+    expect($guide->languages()->count())->toBe(1);
+    expect(\App\Models\GuideDocument::where('guide_id', $guide->id)->where('document_type', 'activity_proof')->count())->toBe(3);
 
     // 2. Try Login - should fail
     $loginResponse = $this->postJson('/api/login', [
