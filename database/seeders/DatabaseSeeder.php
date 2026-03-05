@@ -52,10 +52,10 @@ class DatabaseSeeder extends Seeder
         foreach ($difficulties as $d) \App\Models\DifficultyLevel::firstOrCreate($d);
 
         // Core Users
-        $adminOptions = ['first_name'=>'Admin','last_name'=>'User','email'=>'admin@example.com','password'=>bcrypt('password'),'user_type'=>'admin','status'=>'active'];
+        $adminOptions = ['first_name' => 'Admin', 'last_name' => 'User', 'email' => 'admin@example.com', 'password' => bcrypt('password'), 'user_type' => 'admin', 'status' => 'active'];
         \App\Models\User::firstOrCreate(['email' => 'admin@example.com'], $adminOptions);
 
-        $guideOptions = ['first_name'=>'Ahmed','last_name'=>'Benali','email'=>'guide@example.com','password'=>bcrypt('password'),'user_type'=>'guide','status'=>'active'];
+        $guideOptions = ['first_name' => 'Ahmed', 'last_name' => 'Benali', 'email' => 'guide@example.com', 'password' => bcrypt('password'), 'user_type' => 'guide', 'status' => 'active'];
         $guideUser = \App\Models\User::firstOrCreate(['email' => 'guide@example.com'], $guideOptions);
         $guide = \App\Models\Guide::firstOrCreate(['user_id' => $guideUser->id], [
             'location' => 'Marrakech',
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
             'hourly_rate_from' => 20.00,
         ]);
 
-        $clientOptions = ['first_name'=>'John','last_name'=>'Doe','email'=>'client@example.com','password'=>bcrypt('password'),'user_type'=>'client','status'=>'active'];
+        $clientOptions = ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'client@example.com', 'password' => bcrypt('password'), 'user_type' => 'client', 'status' => 'active'];
         $clientUser = \App\Models\User::firstOrCreate(['email' => 'client@example.com'], $clientOptions);
         \App\Models\Client::firstOrCreate(['user_id' => $clientUser->id], [
             'nationality' => 'USA',

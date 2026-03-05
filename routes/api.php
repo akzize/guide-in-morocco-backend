@@ -42,10 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Guide Protected Routes
     Route::apiResource('tours', TourController::class)->except(['index', 'show']);
-    
+
     // Booking Protected Routes
     Route::apiResource('bookings', BookingController::class);
-    
+
     // Review Protected Routes
     Route::apiResource('reviews', ReviewController::class)->except(['index', 'show']);
 
