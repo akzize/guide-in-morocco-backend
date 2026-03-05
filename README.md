@@ -14,6 +14,30 @@ Base URL: `/api`
 | POST   | `/logout`   | Logout current user | Yes (Sanctum) |
 | GET    | `/user`     | Get authenticated user profile | Yes (Sanctum) |
 
+#### Guide registration payload (`POST /register` with `user_type=guide`)
+
+Required guide-specific fields:
+- `phone`
+- `guide_type`: `city_circuits` or `natural_spaces`
+- `agrement_number`, `agrement_date`, `agrement_authority`
+- `professional_experience`
+- `main_city_id`
+- `operation_city_ids` (array, must include `main_city_id`)
+- `principal_language_id`
+- `spoken_language_ids` (array, must include `principal_language_id`)
+- `profile_photo` (image)
+- `professional_card` (image or PDF)
+- `identity_document_type` (`id_card` or `passport`)
+- `identity_document` (image or PDF)
+
+Optional guide-specific fields:
+- `whatsapp`
+- `bio` (short biography)
+- `hourly_rate_from` (or `tarif_horaire`)
+- `daily_rate` (or `tarif_journalier`)
+- `language_levels` (map of `language_id => basic|intermediate|fluent|native`)
+- `activity_images` (array of images)
+
 ### Public Routes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -56,6 +80,7 @@ Base URL: `/api`
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
 | POST   | `/admin/guides/{guide}/activate` | Activate a guide account | Yes (Admin only) |
+| POST   | `/admin/guides/{guide}/decline` | Decline a guide account | Yes (Admin only) |
 
 ## Standard Responses
 - `200 OK`: Request successful.

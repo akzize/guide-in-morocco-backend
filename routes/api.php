@@ -46,4 +46,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::post('/admin/guides/{guide}/activate', [\App\Http\Controllers\AdminGuideController::class, 'activate']);
+    Route::post('/admin/guides/{guide}/decline', [\App\Http\Controllers\AdminGuideController::class, 'decline']);
 });

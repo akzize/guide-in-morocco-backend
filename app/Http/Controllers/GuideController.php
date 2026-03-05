@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreGuideRequest;
 use App\Http\Requests\UpdateGuideRequest;
 use App\Models\Guide;
 use App\Http\Resources\GuideResource;
@@ -15,7 +14,7 @@ class GuideController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Guide::query()->with(['user', 'languages', 'specialties'])
+        $query = Guide::query()->with(['user', 'languages', 'specialties', 'cities'])
             ->where('certificate_status', 'approved');
 
         if ($request->has('location')) {
@@ -30,10 +29,10 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        $guide->load(['user', 'languages', 'specialties', 'availabilities', 'tours' => function($q) {
+        $guide->load(['user', 'languages', 'specialties', 'cities', 'availabilities', 'tours' => function ($q) {
             $q->where('status', 'published')->with('city');
         }]);
-        
+
         return new GuideResource($guide);
     }
 
@@ -61,7 +60,7 @@ class GuideController extends Controller
         if ($user->user_type !== 'admin') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        
+
         $guide->delete();
         return response()->json(null, 204);
     }

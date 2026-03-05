@@ -36,4 +36,35 @@ class AdminGuideController extends Controller
             'guide' => $guide->load('user'),
         ]);
     }
+
+    public function decline(Request $request, Guide $guide)
+    {
+        if ($request->user()->user_type !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        if ($guide->certificate_status === 'approved') {
+            return response()->json(['message' => 'Approved guide cannot be declined.'], 400);
+        }
+
+        $validated = $request->validate([
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        $guide->update([
+            'certificate_status' => 'rejected',
+            'verification_notes' => $validated['reason'] ?? $guide->verification_notes,
+            'verified_at' => now(),
+            'verified_by' => $request->user()->id,
+        ]);
+
+        $guide->user->update([
+            'status' => 'inactive',
+        ]);
+
+        return response()->json([
+            'message' => 'Guide account declined successfully.',
+            'guide' => $guide->load('user'),
+        ]);
+    }
 }
