@@ -38,6 +38,7 @@ class GuideResource extends JsonResource
             'languages' => $this->whenLoaded('languages'),
             'cities' => $this->whenLoaded('cities'),
             'specialties' => $this->whenLoaded('specialties'),
+            'documents' => $this->whenLoaded('documents'),
             'availabilities' => $this->whenLoaded('availabilities'),
             'tours' => $this->whenLoaded('tours'),
         ];

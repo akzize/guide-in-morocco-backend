@@ -14,7 +14,7 @@ class GuideController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Guide::query()->with(['user', 'languages', 'specialties', 'cities'])
+        $query = Guide::query()->with(['user', 'languages', 'specialties', 'cities', 'documents'])
             ->where('certificate_status', 'approved');
 
         if ($request->has('location')) {
@@ -29,7 +29,7 @@ class GuideController extends Controller
      */
     public function show(Guide $guide)
     {
-        $guide->load(['user', 'languages', 'specialties', 'cities', 'availabilities', 'tours' => function ($q) {
+        $guide->load(['user', 'languages', 'specialties', 'cities', 'documents', 'availabilities', 'tours' => function ($q) {
             $q->where('status', 'published')->with('city');
         }]);
 
@@ -48,7 +48,7 @@ class GuideController extends Controller
 
         $guide->update($request->validated());
 
-        return new GuideResource($guide->load(['user']));
+        return new GuideResource($guide->load(['user', 'languages', 'specialties', 'cities', 'documents', 'availabilities', 'tours']));
     }
 
     /**

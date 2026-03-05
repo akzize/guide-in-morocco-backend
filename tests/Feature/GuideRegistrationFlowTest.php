@@ -56,13 +56,8 @@ test('guide registration to activation flow', function () {
             $principalLanguage->id,
             $spokenLanguage->id,
         ],
-        'language_levels' => [
-            $principalLanguage->id => 'native',
-            $spokenLanguage->id => 'fluent',
-        ],
         'profile_photo' => $profilePhoto,
         'professional_card' => $professionalCard,
-        'identity_document_type' => 'id_card',
         'identity_document' => $identityDocument,
         'activity_images' => [$activityPhoto1, $activityPhoto2],
     ]);
@@ -170,7 +165,6 @@ test('guide registration accepts missing optional pricing fields', function () {
         'spoken_language_ids' => [$principalLanguage->id],
         'profile_photo' => $profilePhoto,
         'professional_card' => $professionalCard,
-        'identity_document_type' => 'passport',
         'identity_document' => $identityDocument,
     ]);
 
@@ -212,7 +206,6 @@ test('admin can decline a guide account and login remains forbidden', function (
         'spoken_language_ids' => [$principalLanguage->id],
         'profile_photo' => $profilePhoto,
         'professional_card' => $professionalCard,
-        'identity_document_type' => 'id_card',
         'identity_document' => $identityDocument,
     ]);
 

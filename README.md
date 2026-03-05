@@ -27,7 +27,6 @@ Required guide-specific fields:
 - `spoken_language_ids` (array, must include `principal_language_id`)
 - `profile_photo` (image)
 - `professional_card` (image or PDF)
-- `identity_document_type` (`id_card` or `passport`)
 - `identity_document` (image or PDF)
 
 Optional guide-specific fields:

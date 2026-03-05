@@ -76,12 +76,9 @@ class AuthController extends Controller
                 },
             ],
             'spoken_language_ids.*' => 'required_with:spoken_language_ids|distinct|exists:languages,id',
-            'language_levels' => 'nullable|array',
-            'language_levels.*' => 'nullable|in:basic,intermediate,fluent,native',
 
             'profile_photo' => 'required_if:user_type,guide|file|image|mimes:jpeg,png,jpg|max:5120',
             'professional_card' => 'required_if:user_type,guide|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'identity_document_type' => 'required_if:user_type,guide|in:id_card,passport',
             'identity_document' => 'required_if:user_type,guide|file|mimes:pdf,jpeg,png,jpg|max:5120',
 
             'activity_images' => 'nullable|array|min:1|max:10',
@@ -138,18 +135,17 @@ class AuthController extends Controller
                 ->unique()
                 ->values();
 
-            $languageLevels = collect($request->input('language_levels', []));
             $syncLanguages = [];
             foreach ($spokenLanguageIds as $languageId) {
                 $syncLanguages[$languageId] = [
                     'is_principal' => $languageId === $principalLanguageId,
-                    'proficiency_level' => $languageLevels->get((string) $languageId, $languageLevels->get($languageId, 'fluent')),
+                    'proficiency_level' => 'fluent',
                 ];
             }
             $guide->languages()->sync($syncLanguages);
 
             $this->storeGuideDocument($guide, $request->file('professional_card'), 'license');
-            $this->storeGuideDocument($guide, $request->file('identity_document'), $request->identity_document_type);
+            $this->storeGuideDocument($guide, $request->file('identity_document'), 'id_card');
 
             if ($request->hasFile('activity_images')) {
                 foreach ($request->file('activity_images') as $image) {
@@ -259,21 +255,10 @@ class AuthController extends Controller
         if (!$request->filled('principal_language_id') && $request->filled('languages')) {
             $languages = collect($request->input('languages', []));
             $principalLanguage = $languages->first(fn($language) => filter_var(data_get($language, 'is_principal', false), FILTER_VALIDATE_BOOLEAN));
-            $languageLevels = [];
-
-            foreach ($languages as $language) {
-                $languageId = data_get($language, 'id');
-                $level = data_get($language, 'proficiency_level');
-
-                if ($languageId && $level) {
-                    $languageLevels[$languageId] = $level;
-                }
-            }
 
             $request->merge([
                 'principal_language_id' => data_get($principalLanguage, 'id'),
                 'spoken_language_ids' => $languages->pluck('id')->filter()->values()->all(),
-                'language_levels' => $languageLevels,
             ]);
         }
 
@@ -299,9 +284,6 @@ class AuthController extends Controller
 
                 if (($documentType === 'id_card' || $documentType === 'passport') && !$request->hasFile('identity_document')) {
                     $request->files->set('identity_document', $documentFile);
-                    if (!$request->filled('identity_document_type')) {
-                        $request->merge(['identity_document_type' => $documentType]);
-                    }
                 }
             }
         }
