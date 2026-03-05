@@ -53,8 +53,7 @@ class DatabaseSeeder extends Seeder
 
         // Core Users
         $adminOptions = ['first_name'=>'Admin','last_name'=>'User','email'=>'admin@example.com','password'=>bcrypt('password'),'user_type'=>'admin','status'=>'active'];
-        $admin = \App\Models\User::firstOrCreate(['email' => 'admin@example.com'], $adminOptions);
-        \App\Models\AdminUser::firstOrCreate(['user_id' => $admin->id], ['role' => 'super_admin']);
+        \App\Models\User::firstOrCreate(['email' => 'admin@example.com'], $adminOptions);
 
         $guideOptions = ['first_name'=>'Ahmed','last_name'=>'Benali','email'=>'guide@example.com','password'=>bcrypt('password'),'user_type'=>'guide','status'=>'active'];
         $guideUser = \App\Models\User::firstOrCreate(['email' => 'guide@example.com'], $guideOptions);

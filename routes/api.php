@@ -31,7 +31,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         $user = $request->user();
-        $user->load($user->user_type === 'guide' ? 'guide' : ($user->user_type === 'client' ? 'client' : 'admin_user'));
+        if ($user->user_type === 'guide') {
+            $user->load('guide');
+        } elseif ($user->user_type === 'client') {
+            $user->load('client');
+        }
+
         return current($user);
     });
 
