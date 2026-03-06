@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Guide Protected Routes
+    Route::get('/guides', [GuideController::class, 'index']);
     Route::apiResource('tours', TourController::class)->except(['index', 'show']);
 
     // Booking Protected Routes
