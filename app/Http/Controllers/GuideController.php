@@ -24,6 +24,19 @@ class GuideController extends Controller
         return GuideResource::collection($query->paginate(15));
     }
 
+      public function guidePending(Request $request)
+    {
+        $query = Guide::query()->with(['user', 'languages', 'specialties', 'cities', 'documents'])
+            ->where('certificate_status', 'pending');
+
+        if ($request->has('location')) {
+            $query->where('location', 'like', '%' . $request->location . '%');
+        }
+
+        return GuideResource::collection($query->paginate(15));
+    }
+
+
     /**
      * Display the specified resource.
      */
