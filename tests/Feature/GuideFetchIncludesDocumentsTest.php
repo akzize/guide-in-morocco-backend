@@ -8,6 +8,13 @@ use function Pest\Laravel\get;
 
 uses(RefreshDatabase::class);
 
+test('guides index requires authentication', function () {
+	$response = get('/api/guides');
+
+	$response->assertUnauthorized()
+		->assertJsonPath('message', 'Unauthenticated.');
+});
+
 test('guides index includes guide documents', function () {
 	$admin = User::create([
 		'first_name' => 'Admin',
