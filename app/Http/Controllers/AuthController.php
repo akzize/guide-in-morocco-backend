@@ -186,18 +186,27 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
 
-        if ($user->status === 'inactive') {
+        if ($user->status === 'inactive' && $user->user_type === 'guide' && $user->guide && $user->guide->certificate_status === 'pending') {
             Auth::guard('web')->logout();
             $user->tokens()->delete();
 
-            $message = 'Your account is pending admin validation.';
+            $message = 'Votre compte est en attente de validation par un administrateur.';
             if ($user->user_type === 'guide' && $user->guide && $user->guide->certificate_status === 'rejected') {
-                $message = 'Your guide account was declined by admin.';
+                $message = 'Votre compte de guide a été refusé par l\'administrateur.';
             }
 
             return response()->json([
                 'message' => $message,
             ], 403);
+        }
+        if ($user->status === 'inactive') {
+            Auth::guard('web')->logout();
+            $user->tokens()->delete();
+
+            return response()->json([
+                'message' => 'Votre compte est inactif. Veuillez contacter le support pour plus d\'informations.',
+            ], 403);
+
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

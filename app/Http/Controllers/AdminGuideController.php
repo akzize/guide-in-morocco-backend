@@ -37,6 +37,33 @@ class AdminGuideController extends Controller
         ]);
     }
 
+
+    public function toggleStatus(Request $request, Guide $guide)
+{
+    if ($request->user()->user_type !== 'admin') {
+        return response()->json([
+            'message' => 'Unauthorized. Admin access required.'
+        ], 403);
+    }
+
+    $user = $guide->user;
+
+    // Toggle status
+    $newStatus = $user->status === 'active' ? 'inactive' : 'active';
+
+    $user->update([
+        'status' => $newStatus,
+    ]);
+
+    return response()->json([
+        'message' => $newStatus === 'active'
+            ? 'Guide account activated successfully.'
+            : 'Guide account locked successfully.',
+        'status' => $newStatus,
+        'guide' => $guide->load('user'),
+    ]);
+}
+
     public function decline(Request $request, Guide $guide)
     {
         if ($request->user()->user_type !== 'admin') {

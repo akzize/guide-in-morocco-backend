@@ -21,6 +21,8 @@ Route::get('/languages', [LanguageController::class, 'index']);
 Route::get('/lookups', [LookupController::class, 'index']);
 Route::get('/tours', [TourController::class, 'index']);
 Route::get('/tours/{tour}', [TourController::class, 'show']);
+Route::get('/guides', [GuideController::class, 'index']);
+Route::get('/guides/pending', [GuideController::class, 'guidePending']);
 Route::get('/guides/{guide}', [GuideController::class, 'show']);
 Route::get('/reviews/tours/{tour}', [ReviewController::class, 'tourReviews']);
 Route::get('/reviews/guides/{guide}', [ReviewController::class, 'guideReviews']);
@@ -52,4 +54,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin Routes
     Route::post('/admin/guides/{guide}/activate', [\App\Http\Controllers\AdminGuideController::class, 'activate']);
     Route::post('/admin/guides/{guide}/decline', [\App\Http\Controllers\AdminGuideController::class, 'decline']);
+    Route::post('/admin/guides/{guide}/toggle-status', [\App\Http\Controllers\AdminGuideController::class, 'toggleStatus']);
 });
