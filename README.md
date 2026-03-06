@@ -45,7 +45,6 @@ Optional guide-specific fields:
 | GET    | `/languages` | List all available languages |
 | GET    | `/tours`   | List all available tours |
 | GET    | `/tours/{tour}` | Get details of a specific tour |
-| GET    | `/guides`  | List all guides |
 | GET    | `/guides/{guide}` | Get details of a specific guide |
 | GET    | `/reviews/tours/{tour}` | Get all reviews for a specific tour |
 | GET    | `/reviews/guides/{guide}` | Get all reviews for a specific guide |
@@ -67,6 +66,11 @@ Optional guide-specific fields:
 | GET    | `/bookings/{booking}` | Get booking details |
 | PUT/PATCH | `/bookings/{booking}` | Update a booking |
 | DELETE | `/bookings/{booking}` | Cancel a booking |
+
+#### Guides
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET    | `/guides` | List all guides (authenticated) |
 
 #### Reviews
 | Method | Endpoint | Description |

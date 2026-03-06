@@ -21,7 +21,6 @@ Route::get('/languages', [LanguageController::class, 'index']);
 Route::get('/lookups', [LookupController::class, 'index']);
 Route::get('/tours', [TourController::class, 'index']);
 Route::get('/tours/{tour}', [TourController::class, 'show']);
-Route::get('/guides', [GuideController::class, 'index']);
 Route::get('/guides/{guide}', [GuideController::class, 'show']);
 Route::get('/reviews/tours/{tour}', [ReviewController::class, 'tourReviews']);
 Route::get('/reviews/guides/{guide}', [ReviewController::class, 'guideReviews']);
@@ -41,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Guide Protected Routes
+    Route::get('/guides', [GuideController::class, 'index']);
     Route::apiResource('tours', TourController::class)->except(['index', 'show']);
 
     // Booking Protected Routes

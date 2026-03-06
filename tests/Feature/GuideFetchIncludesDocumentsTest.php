@@ -9,6 +9,17 @@ use function Pest\Laravel\get;
 uses(RefreshDatabase::class);
 
 test('guides index includes guide documents', function () {
+	$admin = User::create([
+		'first_name' => 'Admin',
+		'last_name' => 'User',
+		'email' => 'index-admin@example.com',
+		'password' => 'password123',
+		'user_type' => 'admin',
+		'status' => 'active',
+	]);
+
+	$token = $admin->createToken('test-guides-index')->plainTextToken;
+
 	$user = User::create([
 		'first_name' => 'Index',
 		'last_name' => 'Guide',
@@ -30,7 +41,9 @@ test('guides index includes guide documents', function () {
 		'file_size' => 128000,
 	]);
 
-	$response = get('/api/guides');
+	$response = get('/api/guides', [
+		'Authorization' => 'Bearer ' . $token,
+	]);
 
 	$response->assertOk()
 		->assertJsonPath('data.0.id', $guide->id)
