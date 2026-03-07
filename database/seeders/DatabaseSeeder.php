@@ -52,11 +52,10 @@ class DatabaseSeeder extends Seeder
         foreach ($difficulties as $d) \App\Models\DifficultyLevel::firstOrCreate($d);
 
         // Core Users
-        $adminOptions = ['first_name' => 'Admin', 'last_name' => 'User', 'email' => 'admin@example.com', 'password' => bcrypt('password'), 'user_type' => 'admin', 'status' => 'active'];
-        \App\Models\User::firstOrCreate(['email' => 'admin@example.com'], $adminOptions);
+        $this->call(AdminUserSeeder::class);
 
-        $guideOptions = ['first_name' => 'Ahmed', 'last_name' => 'Benali', 'email' => 'guide@example.com', 'password' => bcrypt('password'), 'user_type' => 'guide', 'status' => 'active'];
-        $guideUser = \App\Models\User::firstOrCreate(['email' => 'guide@example.com'], $guideOptions);
+        $guideOptions = ['first_name' => 'Ahmed', 'last_name' => 'Benali', 'email' => 'guide@guideinmorocco.com', 'password' => bcrypt('password'), 'user_type' => 'guide', 'status' => 'active'];
+        $guideUser = \App\Models\User::firstOrCreate(['email' => 'guide@guideinmorocco.com'], $guideOptions);
         $guide = \App\Models\Guide::firstOrCreate(['user_id' => $guideUser->id], [
             'location' => 'Marrakech',
             'bio' => 'Experienced guide in the old Medina.',
@@ -66,8 +65,8 @@ class DatabaseSeeder extends Seeder
             'hourly_rate_from' => 20.00,
         ]);
 
-        $clientOptions = ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'client@example.com', 'password' => bcrypt('password'), 'user_type' => 'client', 'status' => 'active'];
-        $clientUser = \App\Models\User::firstOrCreate(['email' => 'client@example.com'], $clientOptions);
+        $clientOptions = ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'client@guideinmorocco.com', 'password' => bcrypt('password'), 'user_type' => 'client', 'status' => 'active'];
+        $clientUser = \App\Models\User::firstOrCreate(['email' => 'client@guideinmorocco.com'], $clientOptions);
         \App\Models\Client::firstOrCreate(['user_id' => $clientUser->id], [
             'nationality' => 'USA',
             'preferred_language' => 'en'
