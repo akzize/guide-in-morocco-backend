@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
-
+use illuminate\Http\Request;
+use App\Http\Resources\ClientResource;
 class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+   public function index(Request $request)
+{
+    $query = Client::query()->with('user');
 
+    return ClientResource::collection(
+        $query->paginate(15)
+    );
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -38,6 +42,7 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         //
+        return $client->load('user');
     }
 
     /**
