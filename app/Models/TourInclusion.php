@@ -9,4 +9,9 @@ class TourInclusion extends Model
 {
     /** @use HasFactory<\Database\Factories\TourInclusionFactory> */
     use HasFactory;
+    protected $fillable = [
+        'tour_id',
+        'inclusion_text',
+        'order_sequence',
+    ];
 }

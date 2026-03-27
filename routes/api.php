@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TourController;
+use App\Http\Controllers\TourStopController;
+use App\Http\Controllers\TourInclusionController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ReviewController;
@@ -19,11 +21,36 @@ use App\Http\Controllers\LanguageController;
 Route::get('/cities', [CityController::class, 'index']);
 Route::get('/languages', [LanguageController::class, 'index']);
 Route::get('/lookups', [LookupController::class, 'index']);
+
+// Public tours routes
 Route::get('/tours', [TourController::class, 'index']);
 Route::get('/tours/{tour}', [TourController::class, 'show']);
 
 Route::get('/reviews/tours/{tour}', [ReviewController::class, 'tourReviews']);
 Route::get('/reviews/guides/{guide}', [ReviewController::class, 'guideReviews']);
+
+// Guide tours routes
+Route::prefix('guide')->middleware('auth:sanctum')->group(function () {
+    Route::get('/tours', [TourController::class, 'guideTours']);
+    Route::get('/tours/{tour}', [TourController::class, 'show']);
+    Route::post('/tours', [TourController::class, 'store']);
+    Route::put('/tours/{tour}', [TourController::class, 'update']);
+    Route::delete('/tours/{tour}', [TourController::class, 'destroy']);
+
+    // Stops
+    Route::get('/tours/{tour}/stops', [TourStopController::class, 'index']);
+    Route::post('/tours/{tour}/stops', [TourStopController::class, 'store']);
+    Route::put('/tours/{tour}/stops/{stop}', [TourStopController::class, 'update']);
+    Route::delete('/tours/{tour}/stops/{stop}', [TourStopController::class, 'destroy']);
+
+        // Inclusions
+    Route::get('/tours/{tour}/inclusions', [TourInclusionController::class, 'index']);
+    Route::post('/tours/{tour}/inclusions', [TourInclusionController::class, 'store']);
+    Route::put('/tours/{tour}/inclusions/{inclusion}', [TourInclusionController::class, 'update']);
+    Route::delete('/tours/{tour}/inclusions/{inclusion}', [TourInclusionController::class, 'destroy']);
+
+
+});
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -48,7 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/clients', [\App\Http\Controllers\ClientController::class, 'index']);
     Route::get('/clients/{client}', [\App\Http\Controllers\ClientController::class, 'show']);
 
-    Route::apiResource('tours', TourController::class)->except(['index', 'show']);
+    // Route::apiResource('tours', TourController::class)->except(['index', 'show']);
 
     // Booking Protected Routes
     Route::apiResource('bookings', BookingController::class);

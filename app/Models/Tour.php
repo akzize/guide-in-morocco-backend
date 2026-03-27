@@ -46,4 +46,28 @@ class Tour extends Model
     {
         return $this->hasMany(TourInclusion::class)->orderBy('order_sequence');
     }
+
+    /**
+     * Get all images for the tour
+     */
+    public function images()
+    {
+        return $this->hasMany(TourImage::class)->orderBy('order_sequence');
+    }
+
+    /**
+     * Get the primary image for the tour
+     */
+    public function primaryImage()
+    {
+        return $this->hasOne(TourImage::class)->where('is_primary', true);
+    }
+
+    /**
+     * Get all images except the primary
+     */
+    public function galleryImages()
+    {
+        return $this->hasMany(TourImage::class)->where('is_primary', false)->orderBy('order_sequence');
+    }
 }
