@@ -10,6 +10,7 @@ use App\Http\Controllers\GuideController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\LookupController;
+use App\Http\Controllers\GuideBookingController;
 
 Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
@@ -49,8 +50,15 @@ Route::prefix('guide')->middleware('auth:sanctum')->group(function () {
     Route::put('/tours/{tour}/inclusions/{inclusion}', [TourInclusionController::class, 'update']);
     Route::delete('/tours/{tour}/inclusions/{inclusion}', [TourInclusionController::class, 'destroy']);
 
+    // Guide booking routes
+
+    Route::get('/completed-bookings', [GuideBookingController::class, 'index']);
+    Route::get('/completed-bookings/{id}', [GuideBookingController::class, 'show']);
+    Route::get('/booking-statistics', [GuideBookingController::class, 'statistics']);
+    Route::get('/export-bookings', [GuideBookingController::class, 'export']);
 
 });
+
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -71,6 +79,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/guides/pending', [GuideController::class, 'guidePending']);
     Route::get('/guides/{guide}', [GuideController::class, 'show']);
 
+    // Admin routes for guide bookings
+    Route::get('/admin/guides/{id}/bookings', [GuideController::class, 'getGuideBookings']);
+    Route::get('/admin/guides/{guideId}/bookings/{bookingId}', [GuideController::class, 'getGuideBookingDetails']);
+
     // client Protected Routes
     Route::get('/clients', [\App\Http\Controllers\ClientController::class, 'index']);
     Route::get('/clients/{client}', [\App\Http\Controllers\ClientController::class, 'show']);
@@ -79,6 +91,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Booking Protected Routes
     Route::apiResource('bookings', BookingController::class);
+
+    // Client booking routes
+    Route::prefix('client')->group(function () {
+        Route::get('/bookings', [BookingController::class, 'clientBooking']);
+        Route::get('/bookings/{id}', [BookingController::class, 'ClientBookingDetails']);
+        Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel']);
+    });
 
     // Review Protected Routes
     Route::apiResource('reviews', ReviewController::class)->except(['index', 'show']);

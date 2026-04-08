@@ -49,4 +49,9 @@ class Guide extends Model
     {
         return $this->hasMany(Tour::class);
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }
